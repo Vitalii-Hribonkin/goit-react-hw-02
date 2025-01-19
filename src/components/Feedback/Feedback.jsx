@@ -1,7 +1,5 @@
 const Feedback = ({ feedbacks, totalFeedback, positiveFeedbackPercentage }) => {
-   
-    if (totalFeedback === 0)
-        return <p>No feedback yet</p>
+
 
     return (
     <div>

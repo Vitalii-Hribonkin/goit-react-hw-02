@@ -1,17 +1,17 @@
+// App.js
 import { useState, useEffect } from 'react';
 import Description from './components/Description/Description';
 import Options from './components/Options/Options';
 import Feedback from './components/Feedback/Feedback';
+import Notification from './components/Notification/Notification';
 
 function App() {
   const [feedbacks, setFeedbacks] = useState(() => {
-    // Спроба отримати дані з localStorage
     const storedFeedbacks = localStorage.getItem('feedbacks');
     return storedFeedbacks ? JSON.parse(storedFeedbacks) : { good: 0, neutral: 0, bad: 0 };
   });
 
   useEffect(() => {
-    // Логування стану перед збереженням
     console.log('Saving feedbacks to localStorage:', feedbacks);
     localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
   }, [feedbacks]);
@@ -24,11 +24,7 @@ function App() {
   };
 
   const resetFeedbacks = () => {
-    setFeedbacks({
-      good: 0,
-      neutral: 0,
-      bad: 0,
-    });
+    setFeedbacks({ good: 0, neutral: 0, bad: 0 });
   };
 
   const totalFeedback = feedbacks.good + feedbacks.neutral + feedbacks.bad;
@@ -36,21 +32,23 @@ function App() {
     ? Math.round((feedbacks.good / totalFeedback) * 100)
     : 0;
 
-  const hasFeedbacks = totalFeedback > 0;
-
   return (
     <>
       <Description />
       <Options
         updateFeedback={updateFeedback}
         resetFeedbacks={resetFeedbacks}
-        hasFeedbacks={hasFeedbacks}
+        hasFeedbacks={totalFeedback > 0}
       />
-      <Feedback
-        feedbacks={feedbacks}
-        totalFeedback={totalFeedback}
-        positiveFeedbackPercentage={positiveFeedbackPercentage}
-      />
+      {totalFeedback > 0 ? (
+        <Feedback
+          feedbacks={feedbacks}
+          totalFeedback={totalFeedback}
+          positiveFeedbackPercentage={positiveFeedbackPercentage}
+        />
+      ) : (
+        <Notification />
+      )}
     </>
   );
 }
